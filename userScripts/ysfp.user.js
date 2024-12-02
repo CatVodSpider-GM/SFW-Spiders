@@ -89,9 +89,7 @@ console.log(JSON.stringify(GM_info));
                 let result = {
                     class: [],
                     filters: {},
-                    list: [],
-                    parse: 0,
-                    jx: 0
+                    list: []
                 };
                 let categoryIds = [];
                 hookResult.navigationbar.data.list.forEach((item) => {
@@ -177,9 +175,32 @@ console.log(JSON.stringify(GM_info));
                     if (typeof hookResult.videochoosegather !== "undefined") {
                         hookResult.videochoosegather.data.list.forEach((item) => {
                             if (videodetails.episodeTitle === item.episodeTitle) {
-                                vodPlayUrls.push(`${item.episodeTitle}$${mediaUrl}@final`);
+                                vodPlayUrls.push({
+                                    name: item.episodeTitle,
+                                    value: {
+                                        type: "finalUrl",
+                                        data: {
+                                            "header": {
+                                                "User-Agent": window.navigator.userAgent,
+                                                "Referer": window.location.href
+                                            },
+                                            "url": mediaUrl
+                                        }
+                                    }
+                                });
                             } else {
-                                vodPlayUrls.push(`${item.episodeTitle}$@{base64Decoder:${btoa(item.mediaKey + "?id=" + item.episodeKey)}}`);
+                                vodPlayUrls.push({
+                                    name: item.episodeTitle,
+                                    value: {
+                                        type: "webview",
+                                        data: {
+                                            replace: {
+                                                mediaKey: item.mediaKey,
+                                                episodeKey: item.episodeKey
+                                            }
+                                        }
+                                    }
+                                })
                             }
                         })
                     } else {
@@ -187,22 +208,35 @@ console.log(JSON.stringify(GM_info));
                         return;
                     }
                 } else {
-                    vodPlayUrls.push(`${videodetails.episodeTitle}$${mediaUrl}@final`);
+                    vodPlayUrls.push({
+                        name: videodetails.episodeTitle,
+                        value: {
+                            type: "finalUrl",
+                            data: {
+                                "header": {
+                                    "User-Agent": window.navigator.userAgent,
+                                    "Referer": window.location.href
+                                },
+                                "url": mediaUrl
+                            }
+                        }
+                    })
                 }
                 return {
-                    list: [{
-                        vod_id: videodetails.mediaKey,
-                        vod_name: videodetails.title,
-                        vod_pic: videodetails.coverImgUrl,
-                        // vod_remarks:  videodetails.,
-                        vod_actor: videodetails.actor,
-                        vod_director: videodetails.director,
-                        vod_tag: videodetails.cidMapper,
-                        vod_area: videodetails.regional,
-                        vod_content: videodetails.introduce,
-                        vod_play_from: "爱壹帆",
-                        vod_play_url: vodPlayUrls.join("#"),
-                    }]
+                    vod_id: videodetails.mediaKey,
+                    vod_name: videodetails.title,
+                    vod_pic: videodetails.coverImgUrl,
+                    vod_actor: videodetails.actor,
+                    vod_director: videodetails.director,
+                    vod_tag: videodetails.cidMapper,
+                    vod_area: videodetails.regional,
+                    vod_content: videodetails.introduce,
+                    vod_play_data: [{
+                        from: "爱壹帆",
+                        url: vodPlayUrls
+                    }],
+                    vod_play_from: "爱壹帆",
+                    vod_play_url: vodPlayUrls.join("#"),
                 };
             },
             playerContent: function (flag, id, vipFlags) {
@@ -213,10 +247,14 @@ console.log(JSON.stringify(GM_info));
                     }
                 })
                 return {
-                    header: JSON.stringify({
-                        "User-Agent": window.navigator.userAgent
-                    }),
-                    url: mediaUrl
+                    type: "finalUrl",
+                    data: {
+                        "header": {
+                            "User-Agent": window.navigator.userAgent,
+                            "Referer": window.location.href
+                        },
+                        "url": mediaUrl
+                    }
                 };
             },
             searchContent: function (key, quick, pg) {

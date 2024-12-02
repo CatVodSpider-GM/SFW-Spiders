@@ -36,10 +36,57 @@
             "loadUrl": "https://m.yfsp.tv/play/${id}"
           },
           "playerContent": {
-            "loadUrl": "https://m.yfsp.tv/play/${id}"
+            "loadUrl": "https://m.yfsp.tv/play/${mediaKey}?id=${episodeKey}"
           },
           "searchContent": {
             "loadUrl": "https://m.yfsp.tv/search"
+          }
+        }
+      }
+    },
+    {
+      "key": "gaze",
+      "name": "注视影视",
+      "type": 3,
+      "searchable": 1,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 0.66
+      },
+      "api": "csp_GM",
+      "ext": {
+        "userScript": "./userScripts/gaze.user.js",
+        "debug": false,
+        "webViewSettings": {
+          "blockNetworkImage": true,
+          "blockList": [
+            "https://*.bytecdntp.com/cdn/expire-1-M/font-awesome/*",
+            "https://*.clarity.ms/*",
+            "https://gaze.run/visitorslog.php*",
+            "*.css*"
+          ]
+        },
+        "playUrlMatch": [
+          "https://dl-b.cloud.189.cn/corp/downloadFile.action?*",
+          "https://gaze.run/gaze_filey/pb/*.m3u8",
+          "https://*/obj/tos*"
+        ],
+        "spider": {
+          "homeContent": {
+            "loadUrl": "https://gaze.run/filter"
+          },
+          "categoryContent": {
+            "loadUrl": "https://gaze.run/filter"
+          },
+          "detailContent": {
+            "loadUrl": "https://gaze.run/play/${id}"
+          },
+          "playerContent": {
+            "loadUrl": "https://gaze.run/play/${mcid}#${path}"
+          },
+          "searchContent": {
+            "loadUrl": "https://gaze.run/filter"
           }
         }
       }
