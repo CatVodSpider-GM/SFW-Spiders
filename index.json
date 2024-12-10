@@ -90,6 +90,42 @@
           }
         }
       }
+    },
+    {
+      "key": "hitv",
+      "name": "Hi视频",
+      "type": 3,
+      "searchable": 1,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 0.71
+      },
+      "api": "csp_GM",
+      "ext": {
+        "userScript": "./userScripts/hitv.user.js",
+        "debug": false,
+        "webViewSettings": {
+          "blockNetworkImage": true,
+          "blockList": [
+            "https://*.google-analytics.com/*"
+          ]
+        },
+        "spider": {
+          "homeContent": {
+            "loadUrl": "https://www.hitv.ai/column/0.html"
+          },
+          "categoryContent": {
+            "loadUrl": "https://www.hitv.ai/column/${tid}.html"
+          },
+          "detailContent": {
+            "loadUrl": "https://www.hitv.ai/play/${id}.html"
+          },
+          "searchContent": {
+            "loadUrl": "https://www.hitv.ai/search/${key}.html"
+          }
+        }
+      }
     }
   ]
 }
